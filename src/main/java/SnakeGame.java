@@ -4,6 +4,5 @@ public class SnakeGame {
 
     //create instance of GameClass, no initial part needed like GameFrame frame = new GameFrame()
         new GameFrame();
-
     }
 }
