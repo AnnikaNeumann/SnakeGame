@@ -8,9 +8,9 @@ public class GamePanel extends JPanel implements ActionListener {
 
     static final int SCREEN_WIDTH = 600;
     static final int SCREEN_HEIGHT = 600;
-    static final int UNIT_SIZE = 25;
+    static final int UNIT_SIZE = 15;
     static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT)/UNIT_SIZE;
-    static final int DELAY = 75;
+    static final int DELAY = 300;
     //array holds all coordinates of the snake bodyparts
     final int x[]= new int[GAME_UNITS];
     final int y[]= new int[GAME_UNITS];
@@ -54,12 +54,24 @@ public class GamePanel extends JPanel implements ActionListener {
     }
     //turn gui into grid for x and y coordinates
     public void draw(Graphics g){
-        for (int i=0;i<SCREEN_HEIGHT/UNIT_SIZE;i++){
-            g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, SCREEN_HEIGHT);
-            g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);
-        }
+//        for (int i=0;i<SCREEN_HEIGHT/UNIT_SIZE;i++){
+//            g.drawLine(i*UNIT_SIZE, 0, i*UNIT_SIZE, SCREEN_HEIGHT);
+//            g.drawLine(0, i*UNIT_SIZE, SCREEN_WIDTH, i*UNIT_SIZE);
+//        }
         g.setColor(Color.red);
         g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
+
+        for(int i = 0; i<bodyParts; i++){
+            if(i == 0){
+                g.setColor(Color.green);
+                g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+            }
+            else{
+                g.setColor(new Color(45, 180, 0));
+                g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
+
+            }
+        }
     }
 
     public void newApple(){
@@ -88,12 +100,7 @@ public class GamePanel extends JPanel implements ActionListener {
             case 'R':
                 x[0] = x[0]+UNIT_SIZE;
                 break;
-
-
         }
-
-
-
     }
 
     public void checkApple(){
@@ -101,15 +108,47 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void checkCollision(){
-
+        //checks if head collides with body
+        for(int i=bodyParts; i>0;i--){
+            if((x[0] == x[i]&& y[0] == y[i])){
+                //triggers game over
+                running = false;
+            }
+        }
+        //checks if head touches left border
+        if(x[0] < 0){
+            running = false;
+        }
+        //checks if head touches right border
+        if(x[0] > SCREEN_WIDTH){
+            running = false;
+        }
+        //checks if head touches top border
+        if(y[0] < 0){
+            running = false;
+        }
+        //checks if head touches bottom border
+        if(x[0] > SCREEN_HEIGHT){
+            running = false;
+        }
+        if(!running){
+            timer.stop();
+        }
     }
 
     public void GameOver(Graphics g){
+
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(running){
+            move();
+            checkApple();
+            checkCollision();
+        }
+        repaint();
 
     }
 
